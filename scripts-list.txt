@@ -1,0 +1,6 @@
+# Lista de scripts para hooks
+# Este archivo es usado por el instalador automático
+
+lvl_prevent-test-db.sh
+# lvl_otro-script.sh  # Descomentar para agregar más scripts
+# lvl_otro-script.sh  # Descomentar para agregar más scripts

@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+# Hook pre-commit simplificado
+# Ejecuta múltiples validaciones en secuencia, fallando si alguna falla
+
+# Obtener raíz del repositorio
+REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null) || {
+    echo "Error: No se encuentra un repositorio git"
+    exit 1
+}
+
+# Lista de scripts a ejecutar (en orden)
+SCRIPTS=(
+    ".git/hooks/scripts/lvl_prevent-test-db.sh"
+    # Agrega aquí más scripts separados por espacios:
+    # "scripts/otra-validacion.sh"
+    # "scripts/tercera-validacion.sh"
+)
+
+# Ejecutar cada script en secuencia
+for SCRIPT in "${SCRIPTS[@]}"; do
+    SCRIPT_PATH="$REPO_ROOT/$SCRIPT"
+
+    # Verificar si el script existe
+    if [ ! -f "$SCRIPT_PATH" ]; then
+        echo "Advertencia: Script no encontrado - $SCRIPT"
+        continue  # Saltar al siguiente si no existe
+    fi
+
+    # Ejecutar script
+    if ! "$SCRIPT_PATH"; then
+        echo "Commit bloqueado por: $SCRIPT"
+        exit 1  # Salir inmediatamente si falla
+    fi
+done
+
+exit 0
+
